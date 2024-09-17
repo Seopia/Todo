@@ -1,0 +1,27 @@
+# server port config
+server:
+  port: 7777  # server port
+
+
+spring:
+  # db config
+  jwt:
+    secret: vmfhaltmskdlstkfkdfdfkgfjsjdfgjsghewkwenbfehfdjhckdkdfjfsfdhjsfduh
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver         # ???? db driver
+    url: jdbc:mysql://localhost:3306/todo               # db url
+    username: root                    # db username
+    password: 1234                     # db password
+  devtools:
+    restart:
+      enabled: false # auto restart option enabled
+
+
+  # jpa config
+  jpa:
+    hibernate:
+      ddl-auto: none      # DDL ???? ????
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
