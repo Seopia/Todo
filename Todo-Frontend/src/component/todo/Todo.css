@@ -16,6 +16,26 @@
     align-items: center;
     justify-content: center; /* 중간에 */
   }
+
+  .account-container {
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+  }
+  .account-container div b {
+    color: rgba(130, 158, 251, 0.46);
+  }
+  .account-container button{
+    width: 7vh;
+    height: 3vh;
+    background-color: rgba(130, 158, 251, 0.46);
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+  }
+  .account-container button:hover{
+    background-color: rgba(115, 141, 223, 0.46);
+  }
   
   
   .todo-app{
@@ -121,8 +141,8 @@
   .day {
     cursor: pointer;
     border: 1px solid #ddd;
-    margin-right: -1px;
-    margin-bottom: -1px;
+    margin-right: 0.5px;
+    margin-bottom: 0.5px;
   }
   
   .day:hover {

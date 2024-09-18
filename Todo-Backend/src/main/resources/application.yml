@@ -1,6 +1,6 @@
 # server port config
 server:
-  port: 7777  # server port
+  port: 8080  # server port
 
 
 spring:
@@ -11,7 +11,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver         # ???? db driver
     url: jdbc:mysql://localhost:3306/todo               # db url
     username: root                    # db username
-    password: 1234                     # db password
+    password: root                     # db password
   devtools:
     restart:
       enabled: false # auto restart option enabled

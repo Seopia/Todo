@@ -6,6 +6,7 @@ import com.yunha.backend.entity.Category;
 import com.yunha.backend.entity.Task;
 import com.yunha.backend.entity.User;
 import com.yunha.backend.repository.TaskRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,13 +50,13 @@ public class TaskService {
 
 
     @Transactional
-    public String removeMyTask(Long taskCode) {
-
+    public void removeMyTask(Long taskCode) throws Exception {
         try{
             taskRepository.deleteById(taskCode);
-            return "할 일 삭제 성공";
-        }catch (Exception e){
-            return "할 일 삭제 실패";
+        } catch (EntityNotFoundException e){
+            throw new EntityNotFoundException("존재하지 않는 데이터입니다.");
+        } catch (Exception e){
+            throw new Exception("알 수 없는 에러입니다.");
         }
     }
 

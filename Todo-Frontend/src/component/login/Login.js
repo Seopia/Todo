@@ -2,6 +2,7 @@ import axios from 'axios';
 import './Login.css';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import api from '../../AxiosInterceptor';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -17,19 +18,18 @@ const Login = () => {
         formData.append('password', pw);
 
         try{
-            const response = await axios.post('http://localhost:7777/login', formData);
+            const response = await axios.post('http://localhost:8080/login', formData);
             localStorage.setItem('token', response.headers.get("Authorization"));
             navigate('/todo');
         }catch(err){
             alert("로그인에 실패하였습니다. \n다시 시도해주시기 바랍니다.", err);
         }
-
     }
   }
 
   useEffect(() => {
     if(localStorage.getItem('token')){
-        navigate('/todo');
+        // navigate('/todo');
     }
     const savedId = localStorage.getItem('id');
     if (savedId) {

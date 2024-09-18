@@ -27,7 +27,6 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-
     // task 할 일 리스트 보기
     @GetMapping("/tasks")
     public ResponseEntity<?> getMyTasks(@RequestParam LocalDate calendarDate, @AuthenticationPrincipal CustomUserDetails user){        // userCode 받아야함
@@ -71,23 +70,14 @@ public class TaskController {
         }
 
     }
-
-
-
-    @PutMapping("/tasks")
-    public ResponseEntity<?> modifyMyTask(@RequestBody TaskDTO newTaskDTO){
-
-        return ResponseEntity.ok().body("수정 성공");
-    }
-
-
-
     @DeleteMapping("/tasks/{taskCode}")
-    public ResponseEntity<?> removeMyTask(@PathVariable Long taskCode){
-
-        String result = taskService.removeMyTask(taskCode);
-        return ResponseEntity.ok().body(result);
-
+    public ResponseEntity<String> removeMyTask(@PathVariable Long taskCode){
+        try{
+            taskService.removeMyTask(taskCode);
+            return ResponseEntity.ok().body("삭제 성공");
+        } catch (Exception e){
+            return ResponseEntity.ok().body(e.getMessage());
+        }
     }
 
 }

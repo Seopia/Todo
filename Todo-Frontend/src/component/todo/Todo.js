@@ -5,10 +5,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faChevronRight, faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
+import api from "../../AxiosInterceptor";
+import { jwtDecode } from "jwt-decode";
 
 const Todo = () => {
 
     const nav = useNavigate();
+    const [user, setUser] = useState({});
     const [categoryNames, setCategoryNames] = useState([]);
     const [taskList, setTaskList] = useState([]);
     const [currentCategory, setCurrentCategory] = useState("전체");
@@ -19,7 +22,7 @@ const Todo = () => {
         taskCode:1,
         taskContent: '',
         taskStartDate: '',
-        taskEndtDate: '',
+        taskEndDate: '',
         taskState: false,
         taskUserName: '',
         taskCategoryName: ''
@@ -29,157 +32,6 @@ const Todo = () => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const formatter = new Intl.DateTimeFormat('en-US', { month: 'long' });
-
-
-
-    const getCategoryList = async() => {
-
-        const response = await axios.get("http://localhost:7777/category", {
-            headers: {
-                Authorization: localStorage.getItem('token')
-            }
-        });
-        if(response.status === 403){
-            nav('/');
-        }
-        if(response.status !== 400){
-            setCategoryNames(response?.data);
-        }else{
-    
-          alert(response.data);
-        }
-    }
-
-    
-    const getTaskOfMonth = async() => {
-
-        let calendarDate = currentDate.toISOString().split('T')[0];
-        const response = await axios.get(`http://localhost:7777/todo/tasks?calendarDate=${calendarDate}`, {
-            headers: {
-                Authorization: localStorage.getItem('token')
-            },
-        });
-        if(response.status === 403){
-            nav('/');
-        }
-        setTaskOfMonth(response.data.data);
-
-    }
-
-
-    const getTaskOfDay = async() =>{
-
-        const selectedDate = selectedDay.toLocaleDateString('en-CA').split('T')[0];
-        const res = await axios.get(`http://localhost:7777/todo/tasks/day?day=${selectedDate}`, {
-            headers: {
-                Authorization: localStorage.getItem('token')
-            },
-        });
-        console.log(res.data);
-        if(res.status === 403){
-            nav('/');
-        }
-        if(res.status === 400){
-            alert('page error');
-        } else{
-            setTaskList(
-                res.data.data.map(item => ({ ...item, isEditing: false }))
-            );
-        }
-
-    }
-
-
-
-    const onChangeRegist = (e) => {
-
-        const { name, value } = e.target;
-        setnewTask(t => ({
-            ...t,
-            [name]: value
-        }));
-
-    }
-
-
-    // 할일 등록
-    const handleRegist = async() => {
-
-        const form = new FormData();
-        form.append('taskCode', newTask.taskCode);
-        form.append('taskContent', newTask.taskContent);
-        form.append('taskStartDate', newTask.taskStartDate);
-        form.append('taskEndDate', newTask.taskEndDate);
-        form.append('taskState', newTask.taskState);
-        // form.append('taskUserName', newTask.taskUserName);
-
-        const res = await axios.post(`http://localhost:7777/todo/tasks`,form,{
-            headers:{
-                Authorization: localStorage.getItem('token')
-            }
-        })
-        if(res.status === 403){
-            nav('/');
-        }
-
-        alert("할 일이 추가되었습니다.");
-        setTaskLoad(false);
-        getTaskOfDay();
-
-    }
-
-
-
-
-    // 할일 수정
-    const handleEdit = (taskCode) => {        
-        setTaskList(taskList.map(item => 
-            item.taskCode === taskCode ? { ...item, isEditing: !item.isEditing } : item
-        ));
-    }
-
-
-    const handleEdited = (taskContent,taskCode) => {
-        const obj = {
-            taskCode : taskCode,
-            taskContent:taskContent,
-        }
-
-        const form = new FormData();
-        form.append("taskCode",taskCode);
-        form.append("taskContent",taskContent);
-        const res = axios.post(`http://localhost:7777/todo/tasks`,form,{
-            headers:{
-                Authorization: localStorage.getItem('token')
-            }
-        })
-        if(res.status === 403){
-            nav('/');
-        }
-
-    }
-
-    
-    
-    // 할일 삭제
-    const deleteTask = async(taskCode) => {
-        const userResponse = window.confirm("삭제하시겠습니까?");
-        if(userResponse){
-            const res = await axios.delete(`http://localhost:7777/todo/tasks/${taskCode}`, {headers: {
-                Authorization: localStorage.getItem('token')
-            }});
-            if(res.status === 403){
-                nav('/');
-            }
-
-            getTaskOfDay();
-            getTaskOfMonth();
-            alert(res.data);  
-        }
-    }
-
-
-
 
      const getDaysInMonth = (date) => {
          const year = date.getFullYear();
@@ -217,31 +69,11 @@ const Todo = () => {
              }
              weeks.push(week);
          }
- 
          return weeks;
      };
  
      // 주 별 날짜
-     const weeks = getDaysInMonthByWeeks(currentDate);
-
-
-     useEffect(() => {
-        if(!localStorage.getItem('token')){
-            nav('/');
-        }
-        getCategoryList();
-        getTaskOfMonth();
-
-    }, []);
-
-    useEffect(()=>{
-        getTaskOfDay();
-        setCurrentCategory('전체');
-    },[selectedDay])
-
-
-
-
+    const weeks = getDaysInMonthByWeeks(currentDate);
     const isEventDay = (date) => {
         if (date) {
             let day = date.getDate();
@@ -250,13 +82,128 @@ const Todo = () => {
             return false;       
         }
     }
+    const isToday = (date) => {
+        if(date){
+            if(date.getDate() === new Date().getDate()){
+                console.log(`${date.getDate()}랑 ${new Date().getDate()}랑 같음`);
+                return true;
+            }
+        } else {
+            return false;
+        }
+        
+        
+        if(date == new Date()){
+            console.log('!!!');
+        }
+    }
+    // -------------------- 상태 관련 --------------------
+    const onChangeRegist = (e) => {
+        const { name, value } = e.target;
+        setnewTask(t => ({
+            ...t,
+            [name]: value
+        }));
+    }
+    const handleEdit = (taskCode) => {        
+        setTaskList(taskList.map(item => 
+            item.taskCode === taskCode ? { ...item, isEditing: !item.isEditing } : item
+        ));
+    }
+    const logout = () => {
+        localStorage.removeItem('token');
+        nav('/');
+    }
     
+    // -------------------- API --------------------
+    // 선택한 달에 할 일 조회 API
+    const getTaskOfMonth = async() => {
+        let calendarDate = currentDate.toISOString().split('T')[0];
+        const res = await api.get(`/todo/tasks?calendarDate=${calendarDate}`);
+        setTaskOfMonth(res.data.data);
+    }
+    // 선택한 날짜의 할 일 조회하는 API
+    const getTaskOfDay = async() =>{
+        try{
+            const selectedDate = selectedDay.toLocaleDateString('en-CA').split('T')[0];
+            const res = await api.get(`/todo/tasks/day?day=${selectedDate}`);
+            setTaskList(res.data.data.map(item => ({ ...item, isEditing: false })));
+        } catch(err){
+            console.log(err);
+        }
+    }
+    
+    // 할 일 등록 API
+    const registTask = async() => {
+        await api.post('/todo/tasks',{
+            taskCode: newTask.taskCode,
+            taskContent: newTask.taskContent,
+            taskStartDate: newTask.taskStartDate,
+            taskEndDate: newTask.taskEndDate,
+            taskState: newTask.taskState,
+        });
+        setTaskLoad(false);
+        getTaskOfDay();
+    }
+    // 할 일 수정 API
+    const modifyTask = (taskContent,taskCode) => {
+        api.post(`/todo/tasks`,{
+            taskCode: taskCode,
+            taskContent: taskContent,
+        })
+    }
+    // 할 일 삭제 API
+    const deleteTask = async(taskCode) => {
+        if(window.confirm("삭제하시겠습니까?")){
+            const res = await api.delete(`/todo/tasks/${taskCode}`);
+            getTaskOfDay();
+            getTaskOfMonth();
+            alert(res.data);  
+        }
+    }
+    //카테고리 조회 API
+    const getCategoryList = async() => {
+        const res = await api.get(`/category`);
+        setCategoryNames(res?.data);
+    }
+
+    // -------------------- useEffect --------------------
+    useEffect(() => {
+        if(!localStorage.getItem('token')){
+            nav('/');
+        } else {
+            getCategoryList();
+            getTaskOfMonth();
+            setUser(jwtDecode(localStorage.getItem('token')));
+        }
+
+
+    }, []);
+
+    useEffect(()=>{
+        getTaskOfDay();
+        setCurrentCategory('전체');
+    },[selectedDay])
+    useEffect(()=>{
+        console.log(user);
+        
+    },[user])
+    // ---------------------------------------------------
+
     
 
     return <div className="todo-app">
 
     <div className="calendar-container">
-
+        {
+            user.accountId ? 
+            <div className="account-container">
+                <div>안녕하세요 <b>{user.accountId}</b> 님!</div> 
+                <button onClick={logout}>Logout</button>
+            </div>
+            :
+            <></>
+        }
         <div className="calendar">
 
             <div className="header">
@@ -287,7 +234,10 @@ const Todo = () => {
                                 style={{backgroundColor : day && (day.getDate() === selectedDay.getDate())
                                     && (day.getMonth() === selectedDay.getMonth())
                                     && (day.getFullYear() === selectedDay.getFullYear())
-                                 ? "#829efb75" : "", color: isEventDay(day) ? 'rgb(130, 158, 251)' : 'black'}}>
+                                 ? "#829efb75" : "", 
+                                 color: isEventDay(day) ? 'rgb(130, 158, 251)' : 'black',
+                                 fontSize: isToday(day) ? 25 : 15,
+                                 borderColor: isToday(day) ? 'black' : '#ddd'}}>
                                 {day ? day.getDate() : ''}
                             </div>
                         ))}
@@ -316,8 +266,8 @@ const Todo = () => {
 
             <header style={{display: "flex", justifyContent:"space-between", marginBottom: "20px"}}>
                 <h1 className="selected-date">{selectedDay.getFullYear()}.{selectedDay.getMonth()+1}.{selectedDay.getDate()}</h1>
-                                <div style={{display: "flex", justifyContent: "flex-end"}}>
-                    <select style={{background: "#4f5b6f", border: "none", borderRadius: "5px"}} onChange={(e) => {setCurrentCategory(e.target.value)}}>
+                                <div style={{display: "flex", justifyContent: "flex-end", alignItems:'center'}}>
+                    <select style={{background: "#4f5b6f", border: "none", borderRadius: "5px",height:30,width:50}} onChange={(e) => {setCurrentCategory(e.target.value)}}>
                         <option value="전체">전체</option>
                         {categoryNames.map((category) => (
                             <option value={category.categoryName} key={category.categoryCode}>
@@ -340,11 +290,11 @@ const Todo = () => {
                             : 
                         (currentCategory === "전체" ?
                             taskList.map((task, idx) => 
-                               <TaskList idx={idx} task={task} handleEdit={handleEdit} handleEdited={handleEdited} deleteTask={deleteTask} setCategoryNames={setCategoryNames} setTaskList={setTaskList}/>
+                               <TaskList idx={idx} task={task} handleEdit={handleEdit} handleEdited={modifyTask} deleteTask={deleteTask} setCategoryNames={setCategoryNames} setTaskList={setTaskList}/>
                             )
                             :
                             taskList.filter((task) => task.taskCategoryName === currentCategory).map((task, idx) => 
-                                <TaskList idx={idx} task={task} handleEdit={handleEdit} handleEdited={handleEdited} deleteTask={deleteTask} setCategoryNames={setCategoryNames} setTaskList={setTaskList}/>
+                                <TaskList idx={idx} task={task} handleEdit={handleEdit} handleEdited={modifyTask} deleteTask={deleteTask} setCategoryNames={setCategoryNames} setTaskList={setTaskList}/>
 
                             )
                         )
@@ -358,7 +308,7 @@ const Todo = () => {
                     <input type="text" name="taskContent" placeholder="내용" onChange={onChangeRegist}/><br /><br />
                     <input type="date" name="taskStartDate" onChange={onChangeRegist}/><br /><br />
                     <input type="date" name="taskEndDate" onChange={onChangeRegist}/><br /><br />
-                    <button onClick={handleRegist}>추가하기</button>
+                    <button onClick={registTask}>추가하기</button>
                 </div>
             </>}
 

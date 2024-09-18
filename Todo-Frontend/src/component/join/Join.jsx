@@ -20,7 +20,7 @@ const Join = () => {
                 formData.append('userId', id);
                 formData.append('userPw', pw);
                 try{
-                    const res = await axios.post('http://localhost:7777/join', formData);
+                    const res = await axios.post('http://localhost:8080/join', formData);
                 } catch(err){
                     alert(err.response.data);
                     
