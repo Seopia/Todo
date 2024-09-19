@@ -2,8 +2,13 @@
 server:
   port: 8080  # server port
 
-
+file:
+  upload-dir: C:\uploads\profile-image
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   # db config
   jwt:
     secret: vmfhaltmskdlstkfkdfdfkgfjsjdfgjsghewkwenbfehfdjhckdkdfjfsfdhjsfduh

@@ -9,7 +9,7 @@ const TaskList = ({task, idx, handleEdit, handleEdited, deleteTask, setTaskList}
 
 
     return  <div className="task" key={idx}>
-    <FontAwesomeIcon icon={faCircle} size="sm" className="faCircle" />
+    <FontAwesomeIcon onClick={()=>alert('완료')} icon={faCircle} size="sm" className="faCircle" />
     { task.isEditing ?
     <>
         <div style={{width:'100%' ,display: "flex", justifyContent:"space-between"}}>

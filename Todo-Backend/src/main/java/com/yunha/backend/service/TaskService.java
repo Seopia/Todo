@@ -61,33 +61,10 @@ public class TaskService {
     }
 
     public List<TaskDTO> getMyTaskList(LocalDate calendarDate, Long userCode) {
-
         try {
-
-            System.out.println("calendarDate : " + calendarDate);
-            int year = calendarDate.getYear();
-            int month = calendarDate.getMonthValue();
-
-            List<Task> myTaskList = taskRepository.findAllByTaskUserCode(year, month, userCode);
-            System.out.println("할일 myTasks : " + myTaskList);
-
-            List<TaskDTO> taskDTOList = new ArrayList<>();
-            //dto로 변환
-            for(Task task: myTaskList){
-                TaskDTO taskDTO = new TaskDTO(
-                        task.getTaskCode(),
-                        task.getTaskContent(),
-                        task.getTaskStartDate(),
-                        task.getTaskEndDate(),
-                        task.isTaskState(),
-                        task.getTaskUser().getUserId(),
-                        task.getTaskCategory().getCategoryName()
-                );
-                taskDTOList.add(taskDTO);
-            }
-            System.out.println(taskDTOList);
-            return taskDTOList;
-
+            return taskRepository.findAllByTaskUserCode(calendarDate.getYear(),
+                                                        calendarDate.getMonthValue(),
+                                                        userCode);
         }catch (Exception e){
             e.printStackTrace();
             return null;

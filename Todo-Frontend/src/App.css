@@ -108,14 +108,14 @@
   
 }
 
-.day, .empty-day {
+/* .day, .empty-day {
   flex: 1 0 14%;
   text-align: center;
-  padding: 30px;
+  padding: 10px;
   box-sizing: border-box;
-  /* border-right: 0.5px solid #2f3444; */
+  border-right: 0.5px solid #2f3444;
   
-}
+} */
 
 .empty-day {
   visibility: hidden;

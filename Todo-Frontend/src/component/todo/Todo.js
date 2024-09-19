@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
 import api from "../../AxiosInterceptor";
 import { jwtDecode } from "jwt-decode";
+import ProfileImage from "../common/ProfileImage";
 
 const Todo = () => {
 
@@ -77,7 +78,8 @@ const Todo = () => {
     const isEventDay = (date) => {
         if (date) {
             let day = date.getDate();
-            return taskOfMonth.some(it => day >= it.taskStartDate[2] && day <= it.taskEndDate[2]);
+            return taskOfMonth.find(it => day >= it.taskStartDate[2] && day <= it.taskEndDate[2])?.taskContent || false;
+
         } else {
             return false;       
         }
@@ -85,16 +87,10 @@ const Todo = () => {
     const isToday = (date) => {
         if(date){
             if(date.getDate() === new Date().getDate()){
-                console.log(`${date.getDate()}랑 ${new Date().getDate()}랑 같음`);
                 return true;
             }
         } else {
             return false;
-        }
-        
-        
-        if(date == new Date()){
-            console.log('!!!');
         }
     }
     // -------------------- 상태 관련 --------------------
@@ -120,7 +116,9 @@ const Todo = () => {
     const getTaskOfMonth = async() => {
         let calendarDate = currentDate.toISOString().split('T')[0];
         const res = await api.get(`/todo/tasks?calendarDate=${calendarDate}`);
-        setTaskOfMonth(res.data.data);
+        console.log(res);
+        
+        setTaskOfMonth(res.data);
     }
     // 선택한 날짜의 할 일 조회하는 API
     const getTaskOfDay = async() =>{
@@ -184,10 +182,6 @@ const Todo = () => {
         getTaskOfDay();
         setCurrentCategory('전체');
     },[selectedDay])
-    useEffect(()=>{
-        console.log(user);
-        
-    },[user])
     // ---------------------------------------------------
 
     
@@ -198,8 +192,14 @@ const Todo = () => {
         {
             user.accountId ? 
             <div className="account-container">
-                <div>안녕하세요 <b>{user.accountId}</b> 님!</div> 
-                <button onClick={logout}>Logout</button>
+                <div style={{display:'flex',alignItems:'center'}}>
+                    <ProfileImage width={50} height={50}/>
+                    <div style={{marginLeft:10}}>안녕하세요 <b>{user.accountNickname}</b> 님!</div> 
+                </div>
+                <div>
+                    <button onClick={()=>nav('/mypage')}>My Page</button>
+                    <button onClick={logout}>Logout</button>
+                </div>
             </div>
             :
             <></>
@@ -237,8 +237,14 @@ const Todo = () => {
                                  ? "#829efb75" : "", 
                                  color: isEventDay(day) ? 'rgb(130, 158, 251)' : 'black',
                                  fontSize: isToday(day) ? 25 : 15,
-                                 borderColor: isToday(day) ? 'black' : '#ddd'}}>
-                                {day ? day.getDate() : ''}
+                                 borderColor: isToday(day) ? 'black' : '#ddd',
+                                 }}>
+                                    <div style={{width:50}}>
+                                        {day ? day.getDate() : ''}
+                                        {isEventDay(day) ? <div style={{fontSize:10}}>{isEventDay(day)}</div> : <></>                                }
+                                    </div>
+                               
+                                
                             </div>
                         ))}
                     </div>

@@ -41,7 +41,6 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     (response) => {
         //정상 응답 온거 처리할거 적기
-        console.log('응답이 왔어요 : ', response);
         
         return response;
     },

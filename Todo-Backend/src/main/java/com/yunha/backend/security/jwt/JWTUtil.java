@@ -26,7 +26,9 @@ public class JWTUtil {
     public Long getUserCode(String token) {
         return getInfo(token).get("accountCode",Long.class);
     }
-
+    public String getUserNickname(String token){
+        return getInfo(token).get("accountNickname",String.class);
+    }
     public String getUsername(String token){
         return getInfo(token).get("accountId",String.class);
     }
@@ -45,12 +47,13 @@ public class JWTUtil {
     }
 
     //JWT 를 발급하는 메서드이다. 추가하고 싶은 정보를 추가하자.
-    public String createJwt(Long accountCode,String username, String role, Long expiredMs){
+    public String createJwt(Long accountCode,String username, String role,String nickname, Long expiredMs){
         System.out.println("토큰이 만료될 시간 : "+new Date(System.currentTimeMillis() + expiredMs));
         return Jwts.builder()
                 .claim("accountCode",accountCode)
                 .claim("accountId",username)
                 .claim("accountRole",role)
+                .claim("accountNickname",nickname)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiredMs))
                 .signWith(secretKey)

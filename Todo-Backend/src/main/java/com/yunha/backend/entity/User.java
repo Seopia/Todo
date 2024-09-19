@@ -1,16 +1,14 @@
 package com.yunha.backend.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @Entity
+@ToString
 @Table(name = "user")
 public class User {
 
@@ -28,6 +26,12 @@ public class User {
 
     @Column(name = "user_role")
     private String userRole;
+
+    @Column(name = "user_nickname")
+    private String userNickname;
+
+    @Column(name = "user_profile_img")
+    private String userProfileImg;
 
     public User(Long userCode) {
         this.userCode = userCode;

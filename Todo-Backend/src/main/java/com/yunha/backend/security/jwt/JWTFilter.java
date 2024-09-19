@@ -23,7 +23,7 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        if ("/join".equals(path) || "/login".equals(path)) {
+        if ("/join".equals(path) || "/login".equals(path) || path.startsWith("/uploads")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -47,12 +47,14 @@ public class JWTFilter extends OncePerRequestFilter {
         Long accountCode = jwtUtil.getUserCode(token);
         String accountId = jwtUtil.getUsername(token);
         String accountRole = jwtUtil.getRole(token);
+        String nickname = jwtUtil.getUserNickname(token);
 
 
         User user = new User();
         user.setUserId(accountId);
         user.setUserRole(accountRole);
         user.setUserCode(accountCode);
+        user.setUserNickname(nickname);
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
 
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());

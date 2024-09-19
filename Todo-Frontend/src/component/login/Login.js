@@ -1,11 +1,13 @@
 import axios from 'axios';
 import './Login.css';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import api from '../../AxiosInterceptor';
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const {message} = location.state || {};
   const [id,setId] = useState('');
   const [pw, setPw] = useState('');
   const [rememberId, setRememberId] = useState(false);
@@ -51,7 +53,7 @@ const Login = () => {
       <section className="login-container">
         <div className="login-input-container">
           <div className="login-input">
-            <div className="login-input-text">Login</div>
+            <div className="login-input-text">Login{message? <div className='login-server-message'>{message}</div> :<></>}</div>
             <input className="login-id" placeholder="아이디" value={id} onChange={(e)=>setId(e.target.value)}/>
             <input className="login-pw" placeholder="비밀번호" type="password" value={pw} onChange={(e)=>setPw(e.target.value)} onKeyDown={(e)=>login(e)}/>
             <div className='remeber-container'>

@@ -1,0 +1,92 @@
+.mypage-container{
+    width: 55%;
+    /* height: 100%; */
+    display: flex;
+    flex-direction: column;
+    /* 세로 기준으로 양쪽 정렬*/
+    border-radius: 5px;
+    background: #fff;
+    color: #2f3444;
+    box-shadow: 10px 10px 10px 2px rgba(190, 196, 253, 0.2); /* 그림자 크기 위치 흐릿함 흐릿함크기*/
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 20px;
+}
+.mypage-infor-container{
+    margin-top: 40px;
+    display: flex;
+}
+
+.mypage-text {
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    margin-right: 20px;
+}
+.mypage-text div {
+    background-color: #2f3444;
+    color: white;
+    width: 100px;
+    border-radius: 5px;
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+.mypage-infor div{
+    margin-bottom: 18px;
+    font-weight: bolder;
+}
+.mypage-container input {
+    height: 20px;
+    background-color:rgb(231, 231, 231);
+  
+    font-size: 15px;
+    padding-left: 15px;
+    border: none;
+    border-radius: 5px;
+}
+.mypage-container input:focus{
+    outline: none;
+}
+.pw-change{
+    background-color: #2f3444;
+    color: #fff;
+    border-radius: 5px;
+    border: none;
+    height: 30px;
+    margin-left: 20px;
+    cursor: pointer;
+    user-select: none;
+}
+.pw-change-text{
+    margin-left: 20px;
+}
+
+
+
+
+/* .profile-input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+} */
+
+input[type="file"] {
+    display: none;  /* 기본 파일 업로드 입력 필드를 숨김 */
+}
+
+.custom-file-upload {
+    margin-top: 10px;
+    display: inline-block;
+    padding: 5px 10px;
+    color: white;
+    background-color:#0056b3;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.custom-file-upload:hover {
+    background-color: #014893;
+}

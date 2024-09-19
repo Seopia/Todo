@@ -19,4 +19,12 @@ public class TaskDTO {
 
     private String taskUserName;
     private String taskCategoryName;
+
+    public TaskDTO(Long taskCode, String taskContent, LocalDate taskStartDate, LocalDate taskEndDate, boolean taskState) {
+        this.taskCode = taskCode;
+        this.taskContent = taskContent;
+        this.taskStartDate = taskStartDate;
+        this.taskEndDate = taskEndDate;
+        this.taskState = taskState;
+    }
 }

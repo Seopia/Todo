@@ -21,17 +21,18 @@
     user-select: none;
     display: flex;
     justify-content: space-between;
+    align-items: center;
   }
   .account-container div b {
     color: rgba(130, 158, 251, 0.46);
   }
   .account-container button{
-    width: 7vh;
-    height: 3vh;
+    color: white;
     background-color: rgba(130, 158, 251, 0.46);
     cursor: pointer;
     border: none;
     border-radius: 5px;
+    margin-left: 10px;
   }
   .account-container button:hover{
     background-color: rgba(115, 141, 223, 0.46);
@@ -128,7 +129,10 @@
   .day, .empty-day {
     flex: 1 0 14%;
     text-align: center;
-    padding: 30px;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
     box-sizing: border-box;
     /* border-right: 0.5px solid #2f3444; */
     

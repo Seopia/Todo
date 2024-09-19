@@ -1,26 +1,29 @@
 import axios from 'axios';
-import './Join.css';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBackward } from "@fortawesome/free-solid-svg-icons";
+import BackButton from '../common/BackButton';
 
 const Join = () => {
     const nav = useNavigate();
     const [id,setId] = useState('');
+    const [nickname, setNickname] = useState('');
     const [pw, setPw] = useState('');
     const [pw2, setPw2] = useState('');
     const [confirmPwState, setConfirmPwState] = useState(false);
     const [confirmPw, setConfirmPw] = useState(false);
   
     const join = async () => {
-        if(id && pw && pw2){
+        if(id && pw && pw2 && nickname){
             if(confirmPw && confirmPwState){
                 const formData = new FormData();
                 formData.append('userId', id);
                 formData.append('userPw', pw);
+                formData.append('userNickname', nickname);
                 try{
                     const res = await axios.post('http://localhost:8080/join', formData);
+                    nav('/',{state:{message:res.data}})
                 } catch(err){
                     alert(err.response.data);
                     
@@ -65,13 +68,11 @@ const Join = () => {
         <section className="login-container">
         <div className="login-input-container">
           <div className="login-input">
-            <div className='faBackword' onClick={()=>nav('/')}>
-                <FontAwesomeIcon icon={faBackward}/>
-                <div className='back-button'>뒤로가기</div>
-            </div>
+            <BackButton moveTo='/'/>
             <div className="login-input-text" style={{marginTop:30}}>Join</div>
             <div>사용하실 아이디, 비밀번호를 입력해주세요.</div>
             <input className="login-id" placeholder="아이디" value={id} onChange={(e)=>setId(e.target.value)}/>
+            <input className='join-nickname' placeholder='닉네임' value={nickname} onChange={(e)=>setNickname(e.target.value)}/>
             <input className="login-pw" placeholder="비밀번호" type="password" value={pw} onChange={(e)=>{setPw(e.target.value); checkPw(e,1);}}/>
             {confirmPwState ? <input className='login-pw' placeholder='비밀번호 확인' type='password' value={pw2} onChange={(e)=>{setPw2(e.target.value);checkPw(e,2)}}/> : <></>}
             {confirmPw ? <div style={{color: 'green',marginTop:10}}>비밀번호가 일치합니다.</div> : <></>}
