@@ -1,15 +1,32 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircle } from "@fortawesome/free-regular-svg-icons";
-import { faChevronRight, faPen, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faChevronRight, faPen, faXmark, faCheck } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
+import api from "../../AxiosInterceptor";
 
 
 
 const TaskList = ({task, idx, handleEdit, handleEdited, deleteTask, setTaskList}) => {
 
+    //회의 준비는 첨부터 true임
 
+    const [status, setStatus] = useState(task.taskStatus);
+    const setTaskStatus = () => {
+        api.post('/todo/tasks',{taskCode:task.taskCode,taskState : !task.taskState});
+        setStatus(!status);
+    }
+    useEffect(()=>{
+        setStatus(task.taskState);
+    },[task])
 
     return  <div className="task" key={idx}>
-    <FontAwesomeIcon onClick={()=>alert('완료')} icon={faCircle} size="sm" className="faCircle" />
+        {
+            status ? 
+            <FontAwesomeIcon onClick={setTaskStatus} icon={faCheck} style={{color: "#FFD43B",}} /> 
+            : 
+            <FontAwesomeIcon onClick={setTaskStatus} icon={faCircle} size="sm" className="faCircle" />
+        }
+    
     { task.isEditing ?
     <>
         <div style={{width:'100%' ,display: "flex", justifyContent:"space-between"}}>

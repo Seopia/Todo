@@ -8,9 +8,11 @@ import TaskList from "./TaskList";
 import api from "../../AxiosInterceptor";
 import { jwtDecode } from "jwt-decode";
 import ProfileImage from "../common/ProfileImage";
+import { useSelector } from "react-redux";
+import { darkModeText, setStyle } from "../common/CommonFunction";
 
 const Todo = () => {
-
+    const darkMode = useSelector((state) => state.theme.darkMode);
     const nav = useNavigate();
     const [user, setUser] = useState({});
     const [categoryNames, setCategoryNames] = useState([]);
@@ -148,6 +150,7 @@ const Todo = () => {
         api.post(`/todo/tasks`,{
             taskCode: taskCode,
             taskContent: taskContent,
+            taskState: false,
         })
     }
     // 할 일 삭제 API
@@ -188,13 +191,13 @@ const Todo = () => {
 
     return <div className="todo-app">
 
-    <div className="calendar-container">
+    <div style={{backgroundColor:darkMode?'#494d5c':'#fff'}} className="calendar-container">
         {
             user.accountId ? 
             <div className="account-container">
                 <div style={{display:'flex',alignItems:'center'}}>
                     <ProfileImage width={50} height={50}/>
-                    <div style={{marginLeft:10}}>안녕하세요 <b>{user.accountNickname}</b> 님!</div> 
+                    <div style={{marginLeft:10,color:setStyle(darkMode,'text')}}>안녕하세요 <b>{user.accountNickname}</b> 님!</div> 
                 </div>
                 <div>
                     <button onClick={()=>nav('/mypage')}>My Page</button>
@@ -211,14 +214,14 @@ const Todo = () => {
                     setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))
                     getTaskOfMonth();
                     }}/>
-                <h2>{formatter.format(currentDate)} {currentDate.getFullYear()}</h2>
+                <h2 style={{color:setStyle(darkMode,'text')}}>{formatter.format(currentDate)} {currentDate.getFullYear()}</h2>
                 <FontAwesomeIcon icon={faChevronRight} className="faChevronRight" onClick={() => {
                     setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))
                     getTaskOfMonth();
                     }}/>
             </div>
 
-            <div className="days-of-week">
+            <div style={{color:setStyle(darkMode,'text')}} className="days-of-week">
                 {daysOfWeek.map(day => (
                     <div key={day} className="day-name">{day}</div>
                 ))}
@@ -236,12 +239,12 @@ const Todo = () => {
                                     && (day.getFullYear() === selectedDay.getFullYear())
                                  ? "#829efb75" : "", 
                                  color: isEventDay(day) ? 'rgb(130, 158, 251)' : 'black',
-                                 fontSize: isToday(day) ? 25 : 15,
+                                 fontSize: isToday(day) ? 18 : 15,
                                  borderColor: isToday(day) ? 'black' : '#ddd',
                                  }}>
                                     <div style={{width:50}}>
                                         {day ? day.getDate() : ''}
-                                        {isEventDay(day) ? <div style={{fontSize:10}}>{isEventDay(day)}</div> : <></>                                }
+                                        {isEventDay(day) ? <div style={{fontSize:10}}>{isEventDay(day)}</div> : isToday(day) ? <div style={{fontSize:13,color:'rgba(130, 158, 251, 0.46)'}}>Today</div> : <></>                              }
                                     </div>
                                
                                 
@@ -296,11 +299,15 @@ const Todo = () => {
                             : 
                         (currentCategory === "전체" ?
                             taskList.map((task, idx) => 
+                                <div key={idx}>
                                <TaskList idx={idx} task={task} handleEdit={handleEdit} handleEdited={modifyTask} deleteTask={deleteTask} setCategoryNames={setCategoryNames} setTaskList={setTaskList}/>
+                               </div>
                             )
                             :
                             taskList.filter((task) => task.taskCategoryName === currentCategory).map((task, idx) => 
+                                <div key={idx}>
                                 <TaskList idx={idx} task={task} handleEdit={handleEdit} handleEdited={modifyTask} deleteTask={deleteTask} setCategoryNames={setCategoryNames} setTaskList={setTaskList}/>
+                                </div>
 
                             )
                         )

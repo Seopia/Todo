@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom"
 import './MyPage.css';
 import api from "../../AxiosInterceptor";
 import BackButton from "../common/BackButton";
-import { getUserProfileImage } from "../common/CommonFunction";
+import { getUserProfileImage, setStyle } from "../common/CommonFunction";
 import ProfileImage from "../common/ProfileImage";
+import { useSelector } from "react-redux";
 
 const MyPage = () => {
     const nav = useNavigate();
+    const darkMode = useSelector(state => state.theme.darkMode);
     const [user,setUser] = useState({});    //나중에 redux로 관리하기
     const [nickname, setNickname] = useState('');
     const [pw,setPw] = useState('');
@@ -71,7 +73,7 @@ const MyPage = () => {
     },[user])
     return(
         <div className="todo-app">
-            <div className="mypage-container">
+            <div style={{background:setStyle(darkMode, 'container')}} className="mypage-container">
                 <div className="mypage-header">
                     <BackButton moveTo='/todo'/>
                 </div>
@@ -102,20 +104,20 @@ const MyPage = () => {
                     {pw.length>0 ? <div>다시 입력</div> : <></>}
                 </div>
                 <div className="mypage-infor">
-                    <div>{user.accountCode}</div>
-                    <div>{user.accountId}</div>
+                    <div style={{color:setStyle(darkMode,'text')}}>{user.accountCode}</div>
+                    <div style={{color:setStyle(darkMode,'text')}}>{user.accountId}</div>
                     <div>
                         <input value={nickname} onChange={(e)=>setNickname(e.target.value)}/>
                         <button className="pw-change" onClick={modifyNickname}>변경</button>
                     </div>
-                    <div>{user.accountRole==='ROLE_USER'?<div>일반 유저</div> : <div>관리자</div>}</div>
+                    <div>{user.accountRole==='ROLE_USER'?<div style={{color:setStyle(darkMode,'text')}}>일반 유저</div> : <div style={{color:setStyle(darkMode,'text')}}>관리자</div>}</div>
                     <input type="password" value={pw} onChange={(e)=>setPw(e.target.value)} style={{marginTop:-10,marginBottom:10}}/>
 
                     {
                             pw.length > 0 ? 
                             <div style={{display:'flex'}}>
                                 <input type="password" value={pw2} onChange={(e)=>setPw2(e.target.value)}/>
-                                {isPwMatch ? <button className="pw-change" onClick={modifyPassword}>변경하기</button> : <div className="pw-change-text">{confirmPwMessage}</div>}
+                                {isPwMatch ? <button className="pw-change" onClick={modifyPassword}>변경하기</button> : <div style={{color:setStyle(darkMode,'text')}} className="pw-change-text">{confirmPwMessage}</div>}
                             </div> : <></>
                         }
                 

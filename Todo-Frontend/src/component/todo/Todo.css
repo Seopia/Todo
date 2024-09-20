@@ -64,7 +64,7 @@
     /* 세로 기준으로 양쪽 정렬*/
     border-radius: 5px;
     background: #fff;
-    color: #2f3444;
+    color: #494d5c;
     box-shadow: 10px 10px 10px 2px rgba(190, 196, 253, 0.2); /* 그림자 크기 위치 흐릿함 흐릿함크기*/
     padding-left: 20px;
     padding-right: 20px;
@@ -154,6 +154,7 @@
   }
   
   .today-btn{
+    color: #fff;
     padding: 10px 25px;
     border-radius: 5px;
     margin-bottom: 30px;

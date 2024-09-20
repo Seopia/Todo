@@ -28,7 +28,15 @@ public class TaskService {
     public String createMyTask(TaskDTO newTaskDTO, Long userCode) {
         try{
             Task task = taskRepository.findById(newTaskDTO.getTaskCode()).orElseThrow();
-            task.setTaskContent(newTaskDTO.getTaskContent());
+
+            System.out.println(task.getTaskCode());
+            System.out.println(task.getTaskContent());
+
+            if(newTaskDTO.getTaskContent() == null){
+                task.setTaskState(newTaskDTO.isTaskState());
+            } else {
+                task.setTaskContent(newTaskDTO.getTaskContent());
+            }
             taskRepository.save(task);
             return "성공";
 
