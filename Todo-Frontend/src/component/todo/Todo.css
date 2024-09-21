@@ -187,7 +187,14 @@
     margin-top: 30px;
     font-size: 18px;
   }
-  
+  .header-btn-container{
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .task{
     display: flex;
     border-bottom: 1px solid #829efb75;

@@ -33,7 +33,7 @@ const Todo = () => {
 
     /* 캘린더 계산 */
     const [currentDate, setCurrentDate] = useState(new Date());
-    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
     const formatter = new Intl.DateTimeFormat('en-US', { month: 'long' });
 
      const getDaysInMonth = (date) => {
@@ -210,15 +210,18 @@ const Todo = () => {
         <div className="calendar">
 
             <div className="header">
-                <FontAwesomeIcon icon={faChevronLeft} className="faChevronLeft" onClick={() => {
+                <div className="header-btn-container" onClick={() => {
                     setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))
-                    getTaskOfMonth();
-                    }}/>
+                    getTaskOfMonth();}}>
+                <FontAwesomeIcon style={{color:setStyle(darkMode,'text')}} icon={faChevronLeft} className="faChevronLeft"/>
+                </div>
                 <h2 style={{color:setStyle(darkMode,'text')}}>{formatter.format(currentDate)} {currentDate.getFullYear()}</h2>
-                <FontAwesomeIcon icon={faChevronRight} className="faChevronRight" onClick={() => {
+                <div className="header-btn-container" onClick={() => {
                     setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))
                     getTaskOfMonth();
-                    }}/>
+                    }}>
+                <FontAwesomeIcon style={{color:setStyle(darkMode,'text')}}  icon={faChevronRight} className="faChevronRight"/>
+                </div>
             </div>
 
             <div style={{color:setStyle(darkMode,'text')}} className="days-of-week">
@@ -238,7 +241,7 @@ const Todo = () => {
                                     && (day.getMonth() === selectedDay.getMonth())
                                     && (day.getFullYear() === selectedDay.getFullYear())
                                  ? "#829efb75" : "", 
-                                 color: isEventDay(day) ? 'rgb(130, 158, 251)' : 'black',
+                                 color: isEventDay(day) ? 'rgb(130, 158, 251)' : setStyle(darkMode,'text'),
                                  fontSize: isToday(day) ? 18 : 15,
                                  borderColor: isToday(day) ? 'black' : '#ddd',
                                  }}>

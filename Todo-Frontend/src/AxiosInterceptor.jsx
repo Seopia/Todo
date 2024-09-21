@@ -59,7 +59,6 @@ api.interceptors.response.use(
         } else {
             //요청도 못했을 때
             console.error(`요청도 못함 : ${error}`)
-
         }
     }
 );

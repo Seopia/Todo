@@ -14,6 +14,7 @@ spring:
     secret: vmfhaltmskdlstkfkdfdfkgfjsjdfgjsghewkwenbfehfdjhckdkdfjfsfdhjsfduh
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver         # ???? db driver
+#    url: jdbc:mysql://host.docker.internal:3306/todo               # db url
     url: jdbc:mysql://localhost:3306/todo               # db url
     username: root                    # db username
     password: root                     # db password
@@ -30,3 +31,4 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+        dialect: org.hibernate.dialect.MySQL8Dialect

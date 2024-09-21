@@ -79,8 +79,9 @@ const MyPage = () => {
                 </div>
                 <div>
                     <div className="profile-input-container">
-                        <div style={{marginTop:20}}>
+                        <div style={{marginTop:20, display:'flex'}}>
                             <ProfileImage width={120} height={120}/>
+                            <div style={{fontSize:25,alignSelf:'center',marginLeft:30,color:setStyle(darkMode,'text')}}>{user.accountNickname}</div>
                         </div>
                         <label htmlFor="file-upload" className="custom-file-upload">
                             프로필 사진 변경

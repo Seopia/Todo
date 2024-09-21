@@ -20,12 +20,14 @@ const TaskList = ({task, idx, handleEdit, handleEdited, deleteTask, setTaskList}
     },[task])
 
     return  <div className="task" key={idx}>
+        <div style={{cursor:'pointer'}}>
         {
             status ? 
             <FontAwesomeIcon onClick={setTaskStatus} icon={faCheck} style={{color: "#FFD43B",}} /> 
             : 
             <FontAwesomeIcon onClick={setTaskStatus} icon={faCircle} size="sm" className="faCircle" />
         }
+        </div>
     
     { task.isEditing ?
     <>
