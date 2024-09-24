@@ -1,40 +1,40 @@
 package com.yunha.backend.controller;
 
 import com.yunha.backend.dto.ChatDTO;
+import com.yunha.backend.dto.ChatResponseDTO;
 import com.yunha.backend.entity.Chat;
 import com.yunha.backend.entity.User;
 import com.yunha.backend.repository.ChatRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 @Controller
 public class ChatController {
     private final ChatRepository chatRepository;
+    private final SimpMessagingTemplate template;
 
-    public ChatController(ChatRepository chatRepository) {
+    public ChatController(ChatRepository chatRepository, SimpMessagingTemplate template) {
         this.chatRepository = chatRepository;
+        this.template = template;
     }
 
     /**
-     * request 시 message만 DTO로 받고 유저 정보는 필터단에서 JWT토큰으로 얻어온다.
-     * response 시 유저의 닉네임과, 메세지 내용을 전달한다.
-     * 좀 더 효율적으로 바꿔야 한다. 고민해봅시다.
-     * @param message
-     * @param headerAccessor
-     * @return
+     * /app/all을 Mapping한다.
+     * /topic/all을 구독한 독자에게 보낸다.
+     * @param message Long userCode, String message
+     * @return ChatResponseDTO
      */
     @MessageMapping("/all")
-    @SendTo("/topic/all")
-    public Chat allChat(ChatDTO message, SimpMessageHeaderAccessor headerAccessor){
-        //요청이 왔다.
-        System.out.println(message);
-        Chat chat = new Chat();
-        chat.setChatMessage(message.getMessage());
-        chat.setUser(new User((long)headerAccessor.getSessionAttributes().get("userCode")));
-        chatRepository.save(chat);
-
-        return chat;
+    @Transactional
+    public void allChat(ChatDTO message){
+        try {
+            Chat chat = new Chat(new User(message.getUserCode()), message.getMessage());
+            chatRepository.save(chat);
+            template.convertAndSend("/topic/all",new ChatResponseDTO(message.getUserNickname(),chat.getChatMessage()));
+        } catch (Exception e){
+            template.convertAndSend("/topic/all",new ChatResponseDTO("관리자", "에러가 발생했습니다."));
+        }
     }
 }

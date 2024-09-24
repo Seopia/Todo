@@ -21,4 +21,9 @@ public class Chat {
     private User user;
     @Column(name = "chat_message")
     private String chatMessage;
+
+    public Chat(User user, String chatMessage) {
+        this.user = user;
+        this.chatMessage = chatMessage;
+    }
 }
