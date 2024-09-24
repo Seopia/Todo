@@ -29,6 +29,7 @@ public class ChatController {
     @SendTo("/topic/all")
     public Chat allChat(ChatDTO message, SimpMessageHeaderAccessor headerAccessor){
         //요청이 왔다.
+        System.out.println(message);
         Chat chat = new Chat();
         chat.setChatMessage(message.getMessage());
         chat.setUser(new User((long)headerAccessor.getSessionAttributes().get("userCode")));

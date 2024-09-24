@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon,faSun } from "@fortawesome/free-solid-svg-icons";
 
 import { toggleDarkMode } from './redux/ThemeActions';
+import TESTPAGE from './component/TESTPAGE/TESTPAGE';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path='/join' element={<Join />} />
         <Route path='/todo' element={<Todo />} />
         <Route path='/mypage' element={<MyPage/>}/>
+        <Route path='/test' element={<TESTPAGE/>}/>
       </Routes>
     </BrowserRouter>
     </div>
