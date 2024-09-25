@@ -4,17 +4,14 @@ import SockJS from 'sockjs-client';
 import { jwtDecode } from 'jwt-decode';
 import { setStyle } from '../common/CommonFunction';
 import { useSelector } from 'react-redux';
+import api from '../../AxiosInterceptor';
 
-//부모가 가정을 무시하면 자식이 자신의 어떤면을 부정하거나 감추는법 배움.
-//자신을 있는 그대로 수용하기 어려워짐 자신의 진정한 모'습을 나타내는 것을 
-//위험하다고 느끼고 부모가 원하는 모습으로 부모의 기대와 바람에 순응
-//자기 수용 3단계 1. 나를 소중히 여기고 존중하기
-//2. ㅇ
 const TESTPAGE = () => {
     const [user, setUser] = useState({});
     const [inputMsg,setInputMsg] = useState('');
     const [stompClient, setStompClient] = useState(null);
     const [msg, setMsg] = useState([]);
+    const [page, setPage] = useState(0);
     const darkMode = useSelector((state)=> state.theme.darkMode);
     useEffect(() => {
       const socket = new SockJS(`http://${process.env.REACT_APP_IP}/chat`);
@@ -66,12 +63,24 @@ const TESTPAGE = () => {
         sendMsg();
       }
     }
+
+    const test = async () => {
+      setPage(page+1);
+      const res = await api.get(`/chat?page=${page}`);
+      console.log(res.data);
+      for(var i=0; i<res.data.content.length; i++){
+        let msgBody = {userNickname:res.data.content[i].user.userNickname,message:res.data.content[i].chatMessage}                
+        setMsg((prev)=> [...prev, msgBody]);
+      }
+      
+    }
   
     return (
       <div>
         <h1>WebSocket Chat</h1>
         <input value={inputMsg} onChange={(e)=>setInputMsg(e.target.value)} onKeyDown={(e)=>keyDownHandler(e)}/>
         <button onClick={sendMsg}>보내기</button>
+        <button onClick={test}>테스트 버튼</button>
         {
           msg.length > 0 ? (msg.map((idx,i)=>(<div style={{display:'flex'}}><div style={{color:setStyle(darkMode,'text')}}>{idx.userNickname} :</div><div style={{color:setStyle(darkMode,'text')}} key={i}> {idx.message}</div></div>))) : <></>
         }

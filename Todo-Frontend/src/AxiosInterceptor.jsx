@@ -48,8 +48,8 @@ api.interceptors.response.use(
         if(error.response){            
             if(error.response.status === 403){
                 alert('토큰이 만료되었습니다. 다시 로그인해주세요.');
-                localStorage.removeItem('token');
-                window.location.href = loginPageURL;
+                // localStorage.removeItem('token');
+                // window.location.href = loginPageURL;
             } else if(error.response.status === 400){
                 alert('에러 BadRequest');
             }
