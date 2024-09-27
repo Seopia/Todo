@@ -5,6 +5,8 @@ import { jwtDecode } from 'jwt-decode';
 import { setStyle } from '../common/CommonFunction';
 import { useSelector } from 'react-redux';
 import api from '../../AxiosInterceptor';
+import BackButton from "../common/BackButton";
+
 
 const Chat = () => {
     const [user, setUser] = useState({});
@@ -115,6 +117,7 @@ const Chat = () => {
     }
     return (
       <div>
+        <BackButton moveTo="/todo"/>
         <h1 style={{color:setStyle(darkMode,'text')}}>채팅방</h1>
         <div ref={chatRef} onScroll={scrollDataLoad} style={{height:200,overflowY:'scroll'}}>
         <table>

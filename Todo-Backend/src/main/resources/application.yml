@@ -5,6 +5,11 @@ server:
 file:
   upload-dir: C:\uploads\profile-image
 spring:
+  mail:
+    host:
+    port:
+    username:
+    password:
   servlet:
     multipart:
       max-file-size: 10MB

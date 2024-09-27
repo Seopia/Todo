@@ -1,11 +1,14 @@
 package com.yunha.backend.security.service;
 
 
+import com.yunha.backend.dto.FindAccountDTO;
 import com.yunha.backend.entity.User;
 import com.yunha.backend.security.dto.CustomUserDetails;
 import com.yunha.backend.security.dto.JoinDTO;
 import com.yunha.backend.security.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -13,10 +16,12 @@ import org.springframework.stereotype.Service;
 public class JoinService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final JavaMailSender javaMailSender;
 
-    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder, JavaMailSender javaMailSender) {
         this.userRepository = userRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.javaMailSender = javaMailSender;
     }
 
     @Transactional
@@ -62,6 +67,24 @@ public class JoinService {
             userRepository.save(userEntity);
         } catch (Exception e){
             throw new Exception("알 수 없는 오류");
+        }
+    }
+
+    public boolean findAccount(FindAccountDTO account) {
+        boolean isExist = userRepository.existsByUserIdAndUserEmail(account.getUserId(),account.getUserEmail());
+        if(isExist){
+            String randomNumber = "1234";
+
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setTo(account.getUserEmail());
+            message.setSubject("Todo 비밀번호 찾기 이메일 인증입니다.");
+            message.setText(randomNumber);
+            javaMailSender.send(message);
+
+            //randomNumber랑 userCode DB 저장
+            return true;
+        } else {
+            return false;
         }
     }
 }
