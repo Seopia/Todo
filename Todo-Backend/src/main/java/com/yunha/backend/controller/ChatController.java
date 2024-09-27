@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.time.LocalDateTime;
+
 @Controller
 public class ChatController {
     private final ChatRepository chatRepository;
@@ -38,11 +40,11 @@ public class ChatController {
     @Transactional
     public void allChat(ChatDTO message){
         try {
-            Chat chat = new Chat(new User(message.getUserCode()), message.getMessage());
+            Chat chat = new Chat(new User(message.getUserCode()), message.getMessage(), LocalDateTime.now());
             chatRepository.save(chat);
-            template.convertAndSend("/topic/all",new ChatResponseDTO(message.getUserNickname(),chat.getChatMessage()));
+            template.convertAndSend("/topic/all",new ChatResponseDTO(message.getUserNickname(),chat.getChatMessage(),chat.getChatTime()));
         } catch (Exception e){
-            template.convertAndSend("/topic/all",new ChatResponseDTO("관리자", "에러가 발생했습니다."));
+            template.convertAndSend("/topic/all",new ChatResponseDTO("관리자", "에러가 발생했습니다.",LocalDateTime.now()));
         }
     }
     @ResponseBody

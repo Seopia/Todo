@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "chat")
 @Getter@Setter
@@ -21,9 +23,12 @@ public class Chat {
     private User user;
     @Column(name = "chat_message")
     private String chatMessage;
+    @Column(name = "chat_time")
+    private LocalDateTime chatTime;
 
-    public Chat(User user, String chatMessage) {
+    public Chat(User user, String chatMessage, LocalDateTime chatTime) {
         this.user = user;
         this.chatMessage = chatMessage;
+        this.chatTime = chatTime;
     }
 }

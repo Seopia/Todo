@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -12,4 +14,5 @@ import lombok.Setter;
 public class ChatResponseDTO {
     private String userNickname;
     private String message;
+    private LocalDateTime time;
 }
