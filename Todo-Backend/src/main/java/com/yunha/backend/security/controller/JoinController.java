@@ -50,23 +50,7 @@ public class JoinController {
         }
     }
 
-    @PostMapping("/account")
-    public ResponseEntity<Boolean> findAccount(FindAccountDTO account){
-        try{
-            boolean isExist = joinService.findAccount(account);
-            if(isExist){
-                return ResponseEntity.ok().body(true);
-            } else {
-                return ResponseEntity.ok().body(false);
-            }
-        } catch (Exception e){
-            return ResponseEntity.badRequest().body(false);
-        }
-    }
-    @GetMapping("/account-sc-num")
-    public ResponseEntity<Boolean> isSecurityNumberCollect(@RequestParam String scNumber){
-        return ResponseEntity.ok().body(false);
-    }
+
 
 
 }

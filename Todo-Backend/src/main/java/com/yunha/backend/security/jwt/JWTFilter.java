@@ -23,7 +23,7 @@ public class JWTFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
-        if ("/join".equals(path) || "/login".equals(path) || path.startsWith("/uploads") || path.startsWith("/chat")) {
+        if ("/join".equals(path) || "/login".equals(path) || path.startsWith("/uploads") || path.startsWith("/chat") || path.startsWith("/account")) {
             filterChain.doFilter(request, response);
             return;
         }

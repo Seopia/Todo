@@ -6,6 +6,7 @@ import { setStyle } from '../common/CommonFunction';
 import { useSelector } from 'react-redux';
 import api from '../../AxiosInterceptor';
 import BackButton from "../common/BackButton";
+import './Chat.css';
 
 
 const Chat = () => {
@@ -61,18 +62,23 @@ const Chat = () => {
     }, []);
     const sendMsg = () => {
         if(stompClient && stompClient.connected){
+          if(inputMsg){
             const msg = {
-                userCode: user.accountCode,
-                userNickname: user.accountNickname,
-                message: inputMsg,
+              userCode: user.accountCode,
+              userNickname: user.accountNickname,
+              message: inputMsg,
             }
             stompClient.publish({
                 destination: '/app/all',
                 body: JSON.stringify(msg),
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
+            setInputMsg('');
+          } else {
+
+          }
         }
-        setInputMsg('');
+        
     }
     const keyDownHandler = (event) => {
       if(event.key === 'Enter'){
@@ -83,6 +89,8 @@ const Chat = () => {
     const test = async () => {      
       setPage(page+1);
       const res = await api.get(`/chat?page=${page}`);
+      console.log(res.data.first);
+      
       let newMsg = [];
       let len = res.data.content.length;
       for(var i=1; i<=res.data.content.length; i++){
@@ -95,38 +103,48 @@ const Chat = () => {
       }
       setMsg((prev)=>[...newMsg, ...prev]); 
     }
+    const [scrollHeight, setScrollHeight] = useState(0);
+    const [firstData, setFirstData] = useState(true);
+    const [prevScrollTop, setPrevScrollTop] = useState(null); // 이전 스크롤 위치 저장
+    
+    // 스크롤 이벤트
     const scrollDataLoad = () => {
-      if(chatRef.current.scrollTop === 0){
+      if (chatRef.current.scrollTop === 0) {
+        setPrevScrollTop(chatRef.current.scrollHeight);
         test();
       }
-    }
-    const [firstData, setFirstData] = useState(true);
-    useEffect(()=>{
-      if(msg.length>0){
-        if(firstData){
+    };
+    
+    // 데이터가 업데이트될 때
+    useEffect(() => {
+      if (msg.length > 0) {
+        if (firstData) {
           downScroll();
           setFirstData(false);
+        } else if (prevScrollTop !== null) {
+          const currentScrollHeight = chatRef.current.scrollHeight;
+          chatRef.current.scrollTop = currentScrollHeight - prevScrollTop;
         }
-      } else {
-        downScroll();
       }
-    },[msg])
+    }, [msg]);
+    
     const downScroll = () => {
       const table = chatRef.current;
       table.scrollTop = table.scrollHeight;
-    }
+    };
+    
     return (
       <div>
         <BackButton moveTo="/todo"/>
         <h1 style={{color:setStyle(darkMode,'text')}}>채팅방</h1>
-        <div ref={chatRef} onScroll={scrollDataLoad} style={{height:200,overflowY:'scroll'}}>
+        <div className='chat-container' ref={chatRef} onScroll={scrollDataLoad}>
         <table>
           <tbody>
         {msg.length > 0 ? (
           msg.map((idx, i) => (
             <tr key={i}>
               <td style={{ color: setStyle(darkMode, 'text') }}>{idx.userNickname} :</td>
-              <td style={{ color: setStyle(darkMode, 'text'), paddingRight:20}}>{idx.message}</td>
+              <td style={{ color: setStyle(darkMode, 'text'), paddingRight:200}}>{idx.message}</td>
               <td style={{ color: setStyle(darkMode, 'text') }}>
                 {`${idx.time[1]}/${idx.time[2]} - ${idx.time[3]}:${idx.time[4]}:${idx.time[5]}`}
               </td>
@@ -134,15 +152,16 @@ const Chat = () => {
           ))
         ) : (
             <tr>
-              <td>채팅 내역이 없습니다.</td>
+              <td style={{color:setStyle(darkMode,'text')}}>채팅 내역이 없습니다.</td>
             </tr>
           )}
           </tbody>
         </table>
         </div>
-        <input value={inputMsg} onChange={(e)=>setInputMsg(e.target.value)} onKeyDown={(e)=>keyDownHandler(e)}/>
-        <button onClick={sendMsg}>보내기</button>
-        {/* <button onClick={test}>테스트 버튼</button> */}
+        <div className='chat-input-container'>
+          <input className='chat-input' value={inputMsg} onChange={(e)=>setInputMsg(e.target.value)} onKeyDown={(e)=>keyDownHandler(e)}/>
+          <button className='chat-send-button' onClick={sendMsg}>보내기</button>
+        </div>
       </div>
     );
   };

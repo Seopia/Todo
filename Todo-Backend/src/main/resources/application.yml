@@ -18,10 +18,10 @@ spring:
   jwt:
     secret: vmfhaltmskdlstkfkdfdfkgfjsjdfgjsghewkwenbfehfdjhckdkdfjfsfdhjsfduh
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver         # ???? db driver
+    driver-class-name: org.mariadb.jdbc.Driver
 #    url: jdbc:mysql://host.docker.internal:3306/todo               # db url
-    url: jdbc:mysql://localhost:3306/todo               # db url
-    username: root                    # db username
+    url: jdbc:mariadb://180.67.117.226:3306/todo               # db url
+    username: feeleat                    # db username
     password: root                     # db password
   devtools:
     restart:

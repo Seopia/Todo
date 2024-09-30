@@ -1,31 +1,46 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../AxiosInterceptor";
+import axios from "axios";
 
 const FindAccount = () => {
     const nav = useNavigate();
     const [id, setId] = useState('');
     const [email,setEmail] = useState('');
     const [securityNumber, setSecurityNumber] = useState('');
+    const [serverMsg, setServerMsg] = useState('');
+    const [inputDisable, setInputDisable] = useState(false);
 
     const [confirm, setConfirm] = useState(false);
     //인증 번호 전송 버튼
     const findAccount = async () => {
         //id와 email이 일치하는 계정이 있는지 확인 후 인증번호 전송
-        const res = await api.post(`/account`,{userId: id,userEmail:email});
-        
-        if(res.data){
-            setConfirm(true);
+        if(id && email){
+            const form = new FormData();
+            form.append('userId',id);
+            form.append('userEmail',email);
+            const res = await axios.post(`http://${process.env.REACT_APP_IP}/account/find-by-id-email`,form,{
+                headers:{
+                    "Content-Type": 'multipart/form-data',
+                }
+            });            
+            if(res.data){
+                setConfirm(true);
+                setInputDisable(true);
+                setServerMsg('');
+            } else {
+                setServerMsg('아이디랑 이메일이 일치하지 않아요');
+            }
         } else {
-            alert('아이디랑 이메일이 일치하지 않아요~');
+            setServerMsg('모두 다 입력해주세요.');
         }
     }
     const confirmSecurityNumber = async () => {
-        const res = await api.get(`/account-sc-num?scNumber=${securityNumber}`);
+        const res = await axios.get(`http://${process.env.REACT_APP_IP}/account/find-by-sc-num?scNumber=${securityNumber}`)
         if(res.data){
             nav('/find-account/password-change');
         } else {
-            alert('인증번호가 일치하지 않아요~');
+            setServerMsg('인증번호가 일치하지 않아요.');
         }
     }
     return(
@@ -33,8 +48,9 @@ const FindAccount = () => {
             <div className="login-input-container">
                 <div className="login-input">
                     <h1>비밀번호 찾기</h1>
-                    <input className="login-id" placeholder="아이디를 입력해주세요" value={id} onChange={(e)=>setId(e.target.value)}/>
-                    <input className="login-id" placeholder="이메일을 입력해주세요" value={email} onChange={(e)=>setEmail(e.target.value)}/>
+                    {serverMsg ? <div style={{color:'red'}}>{serverMsg}</div> : <></>}
+                    <input disabled={inputDisable} className="login-id" placeholder="아이디를 입력해주세요" value={id} onChange={(e)=>setId(e.target.value)}/>
+                    <input disabled={inputDisable} className="login-id" placeholder="이메일을 입력해주세요" value={email} onChange={(e)=>setEmail(e.target.value)}/>
                     
                     {confirm ? 
                     <>
