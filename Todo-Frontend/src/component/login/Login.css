@@ -86,3 +86,13 @@
     margin-top: 10px;
     font-size: 12px;
   }
+  .find-account-container{
+    margin-top: 10px;
+    display: flex;
+  }
+  .find-account {
+    cursor: pointer;
+    border: none;
+    background-color: white;
+  }
+  

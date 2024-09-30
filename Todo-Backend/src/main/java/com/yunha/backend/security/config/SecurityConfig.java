@@ -73,7 +73,7 @@ public class SecurityConfig {
         //경로별 인가 작업
         http
                 .authorizeHttpRequests((auth)-> auth
-                        .requestMatchers("/login", "/", "/join", "/ws/**", "/uploads/**").permitAll()   //"login", "/", "/join" 경로는 모든 권한을 허용함
+                        .requestMatchers("/login", "/", "/join", "/ws/**", "/uploads/**", "/chat/**","/account/**").permitAll()   //"login", "/", "/join" 경로는 모든 권한을 허용함
                         .requestMatchers("/admin").hasRole("ADMIN")             // "/admin" 경로는 ADMIN 권한이 있는지 확인함
                         .anyRequest().authenticated());     //나머지 경로는 모두 권한을 확인함
 

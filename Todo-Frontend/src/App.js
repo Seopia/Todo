@@ -1,14 +1,18 @@
 import './App.css';
 import Todo from './component/todo/Todo';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Provider, useDispatch, useSelector} from 'react-redux';
 import Join from './component/join/Join';
 import Login from './component/login/Login';
 import MyPage from './component/mypage/MyPage';
+import Chat from './component/chat/Chat';
+import NotFound from './component/error/NotFound';
+
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Provider, useDispatch, useSelector} from 'react-redux';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon,faSun } from "@fortawesome/free-solid-svg-icons";
-
 import { toggleDarkMode } from './redux/ThemeActions';
+import FindAccount from './component/login/find-account/FindAccount';
+import PasswordChange from './component/login/find-account/PasswordChange';
 
 
 function App() {
@@ -26,6 +30,10 @@ function App() {
         <Route path='/join' element={<Join />} />
         <Route path='/todo' element={<Todo />} />
         <Route path='/mypage' element={<MyPage/>}/>
+        <Route path='/chat' element={<Chat/>}/>
+        <Route path='/find-account' element={<FindAccount/>}/>
+        <Route path='/find-account/password-change' element={<PasswordChange/>}/>
+        <Route path='*' element={<NotFound/>}/>
       </Routes>
     </BrowserRouter>
     </div>

@@ -200,6 +200,7 @@ const Todo = () => {
                     <div style={{marginLeft:10,color:setStyle(darkMode,'text')}}>안녕하세요 <b>{user.accountNickname}</b> 님!</div> 
                 </div>
                 <div>
+                    <button onClick={()=>nav('/chat')}>Chat Room</button>
                     <button onClick={()=>nav('/mypage')}>My Page</button>
                     <button onClick={logout}>Logout</button>
                 </div>

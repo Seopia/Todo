@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 const ProfileImage = ({width,height}) => {
     const nav = useNavigate();
     const [profileImg, setProfileImg] = useState(null);
+    const [defaultProfileImage, setDefaultProfileImage] = useState('/profile/default-profile.jpg');
 
     useEffect(()=>{
         getUserProfileImage()
@@ -21,9 +22,9 @@ const ProfileImage = ({width,height}) => {
             height: height,
         }} className="mypage-profile-image">
             {profileImg!=='http://localhost:8080/uploads/null' ? 
-            <img src={profileImg} alt="file"/> 
+            <img src={profileImg} alt="file" onError={()=>{setProfileImg(defaultProfileImage)}}/> 
             : 
-            <img src="/profile/default-profile.jpg" alt="엥?"/>}
+            <img src={defaultProfileImage} alt="엥?"/>}
         </div>
     )
 }

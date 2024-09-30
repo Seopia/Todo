@@ -1,14 +1,16 @@
 package com.yunha.backend.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter@Getter
+@ToString
 public class ChatDTO {
+    private Long userCode;
     private String userNickname;
     private String message;
+    private LocalDateTime chatTime;
 }

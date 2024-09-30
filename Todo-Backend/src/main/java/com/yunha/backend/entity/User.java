@@ -33,6 +33,9 @@ public class User {
     @Column(name = "user_profile_img")
     private String userProfileImg;
 
+    @Column(name = "user_email")
+    private String userEmail;
+
     public User(Long userCode) {
         this.userCode = userCode;
     }

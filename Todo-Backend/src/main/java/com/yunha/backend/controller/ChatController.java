@@ -1,39 +1,57 @@
 package com.yunha.backend.controller;
 
 import com.yunha.backend.dto.ChatDTO;
+import com.yunha.backend.dto.ChatResponseDTO;
 import com.yunha.backend.entity.Chat;
 import com.yunha.backend.entity.User;
 import com.yunha.backend.repository.ChatRepository;
+import com.yunha.backend.service.ChatService;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.time.LocalDateTime;
 
 @Controller
 public class ChatController {
     private final ChatRepository chatRepository;
+    private final SimpMessagingTemplate template;
+    private final ChatService chatService;
 
-    public ChatController(ChatRepository chatRepository) {
+    public ChatController(ChatRepository chatRepository, SimpMessagingTemplate template, ChatService chatService) {
         this.chatRepository = chatRepository;
+        this.template = template;
+        this.chatService = chatService;
     }
 
     /**
-     * request 시 message만 DTO로 받고 유저 정보는 필터단에서 JWT토큰으로 얻어온다.
-     * response 시 유저의 닉네임과, 메세지 내용을 전달한다.
-     * 좀 더 효율적으로 바꿔야 한다. 고민해봅시다.
-     * @param message
-     * @param headerAccessor
-     * @return
+     * /app/all을 Mapping한다.
+     * /topic/all을 구독한 독자에게 보낸다.
+     * @param message Long userCode, String message
+     * @return ChatResponseDTO
      */
     @MessageMapping("/all")
-    @SendTo("/topic/all")
-    public Chat allChat(ChatDTO message, SimpMessageHeaderAccessor headerAccessor){
-        //요청이 왔다.
-        Chat chat = new Chat();
-        chat.setChatMessage(message.getMessage());
-        chat.setUser(new User((long)headerAccessor.getSessionAttributes().get("userCode")));
-        chatRepository.save(chat);
-
-        return chat;
+    @Transactional
+    public void allChat(ChatDTO message){
+        try {
+            Chat chat = new Chat(new User(message.getUserCode()), message.getMessage(), LocalDateTime.now());
+            chatRepository.save(chat);
+            template.convertAndSend("/topic/all",new ChatResponseDTO(message.getUserNickname(),chat.getChatMessage(),chat.getChatTime()));
+        } catch (Exception e){
+            template.convertAndSend("/topic/all",new ChatResponseDTO("관리자", "에러가 발생했습니다.",LocalDateTime.now()));
+        }
+    }
+    @ResponseBody
+    @GetMapping("/chat")
+    public ResponseEntity<?> getPastMessage(@RequestParam int page){
+        System.out.println("d?");
+        Page<Chat> chat = chatService.getPastMessage(page, 10);
+        return ResponseEntity.ok().body(chat);
     }
 }
