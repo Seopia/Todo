@@ -1,6 +1,7 @@
+## 두 개 파일 필요함
+1. Todo-Backend/src/main/resources/application.yml
+2. Todo-Frontend/.env
 
-#### Todo-Backend/src/main/resources/application.yml 필요함
-#### Todo-Frontend/.env 필요함
 
 ### application.yml 세팅 예시
 ```
