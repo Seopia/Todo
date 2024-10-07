@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../AxiosInterceptor";
 import axios from "axios";
@@ -10,6 +10,8 @@ const FindAccount = () => {
     const [securityNumber, setSecurityNumber] = useState('');
     const [serverMsg, setServerMsg] = useState('');
     const [inputDisable, setInputDisable] = useState(false);
+
+    const [time, setTime] = useState(600);
 
     const [confirm, setConfirm] = useState(false);
     //인증 번호 전송 버튼
@@ -36,18 +38,45 @@ const FindAccount = () => {
         }
     }
     const confirmSecurityNumber = async () => {
-        const res = await axios.get(`http://${process.env.REACT_APP_IP}/account/find-by-sc-num?scNumber=${securityNumber}`)
+        const form = new FormData();
+        form.append('token',securityNumber);
+        form.append('userId',id);
+        form.append('userEmail',email);
+        const res = await axios.post(`http://${process.env.REACT_APP_IP}/account/find-by-sc-num`,form,{
+            headers:{
+                "Content-Type": 'multipart/form-data',
+            }
+        });
         if(res.data){
-            nav('/find-account/password-change');
+            nav('/find-account/password-change',{state:{isValid: true,id:id,email:email}});
         } else {
             setServerMsg('인증번호가 일치하지 않아요.');
         }
     }
+    useEffect(()=>{
+        if(confirm){
+            startTimer();
+        }
+    },[confirm])
+
+    useEffect(()=>{    
+            if(time > 0){
+                console.log(time);
+            } else {
+                nav('/',{state:{message:'인증번호 시간이 만료되었습니다. 다시 시도해주세요.'}})
+            }
+    },[time])
+
+    const startTimer = () => setInterval(()=>{
+        setTime(prev => prev - 1);
+    },1000)
+
     return(
         <section className="login-container">
             <div className="login-input-container">
                 <div className="login-input">
                     <h1>비밀번호 찾기</h1>
+                    {confirm ? time > 0 ? <div style={{color:'green'}}>남은 시간 : {time}초</div> : <div>제한 시간 종료</div> : <></>}
                     {serverMsg ? <div style={{color:'red'}}>{serverMsg}</div> : <></>}
                     <input disabled={inputDisable} className="login-id" placeholder="아이디를 입력해주세요" value={id} onChange={(e)=>setId(e.target.value)}/>
                     <input disabled={inputDisable} className="login-id" placeholder="이메일을 입력해주세요" value={email} onChange={(e)=>setEmail(e.target.value)}/>
