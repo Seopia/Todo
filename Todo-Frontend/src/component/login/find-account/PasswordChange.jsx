@@ -1,20 +1,35 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PasswordChange = () => {
     const nav = useNavigate();
+    const location = useLocation();
+    const {isValid,id,email} = location.state || {};
     const [pw, setPw] = useState('');
     const [pw2, setPw2] = useState('');
     const [msg, setMsg] = useState('');
-    const changePassword = () => {
+    const changePassword = async () => {
         if(pw === pw2){
-            const res = {data : '비밀번호가 변경되었습니다. 다시 로그인해주세요.'}
+            const form = new FormData();
+            form.append('id',id);
+            form.append('email',email);
+            form.append('password',pw);
+            const res = await axios.post(`http://${process.env.REACT_APP_IP}/account/password`,form,{
+                headers:{
+                    "Content-Type": 'multipart/form-data',
+                }
+            });
             nav('/',{state:{message:res.data}})   
         } else {
             setMsg('비밀번호가 일치하지 않아요.');
         }
-
     }
+    useEffect(()=>{
+        if(!isValid){
+            nav('/');
+        }
+    })
     return(
         <section className="login-container">
         <div className="login-input-container">
