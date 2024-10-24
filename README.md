@@ -1,3 +1,6 @@
+#### 테스트용 배포 완료
+www.seopia.online
+
 ## 두 개 파일 필요함
 1. Todo-Backend/src/main/resources/application.yml
 2. Todo-Frontend/.env
